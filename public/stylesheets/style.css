@@ -7,3 +7,9 @@ body {
 a {
   color: #00B7FF;
 }
+
+.row {
+  border-style: solid 1px;
+  border-color: darkgray;
+  margin: 5px;
+}
