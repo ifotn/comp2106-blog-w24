@@ -7,6 +7,13 @@ let logger = require('morgan');
 let index = require('./controllers/index');
 let users = require('./controllers/users');
 
+// custom controllers
+let posts = require('./controllers/posts');
+
+// custom imports
+let mongoose = require('mongoose');
+let dotenv = require('dotenv');
+
 let app = express();
 
 // view engine setup
@@ -19,8 +26,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// if app is not in production mode, connect to .env file for global vars
+// these global vars set in the Render dashboard in production
+if (process.env.NODE_ENV != 'production') {
+  require('dotenv').config();
+}
+
+// mongodb connection BEFORE controllers included
+mongoose.connect(process.env.CONNECTION_STRING)
+.then((res) => { console.log('Connected to MongoDB') })
+.catch(() => { console.log('MongoDB connection failed') });
+
 app.use('/', index);
 app.use('/users', users);
+app.use('/posts', posts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
