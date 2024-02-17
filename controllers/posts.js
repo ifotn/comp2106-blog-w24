@@ -45,5 +45,35 @@ router.post('/create', async (req, res) => {
     res.redirect('/posts');
 });
 
+/* GET: /posts/delete/abc123 => remove selected doc & redirect */
+router.get('/delete/:_id', async (req, res) => {
+    // delete selected doc based on _id in url param
+    await Post.findByIdAndDelete(req.params._id);
+
+    // redirect
+    res.redirect('/posts');
+});
+
+/* GET: /posts/edit/abc123 => display selected doc in form */
+router.get('/edit/:_id', async (req, res) => {
+    // get selected doc from db
+    let post = await Post.findById(req.params._id);
+
+    // load view & pass data
+    res.render('posts/edit', {
+        title: 'Edit Post',
+        post: post
+    });
+});
+
+/* POST: /posts/edit/abc123 => updated doc from form submission */
+router.post('/edit/:_id', async (req, res) => {
+    // update doc
+    await Post.findByIdAndUpdate(req.params._id, req.body);
+
+    // redirect
+    res.redirect('/posts');
+});
+
 // make public
 module.exports = router;
