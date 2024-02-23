@@ -20,5 +20,7 @@ let post = new mongoose.Schema({
     }
 });
 
+post.index({ title: 'text', body: 'text' });
+
 // make the model public so the controllers can use it
 module.exports = mongoose.model('Post', post);

@@ -75,5 +75,15 @@ router.post('/edit/:_id', async (req, res) => {
     res.redirect('/posts');
 });
 
+router.post('/search', async(req, res) => {
+    let posts = await Post.find({ $text: { $search: req.body.keyword }});
+    console.log(posts);
+    res.render('posts/search', { 
+        title: 'Search Results', 
+        posts: posts,
+        keyword: req.body.keyword
+    });
+});
+
 // make public
 module.exports = router;

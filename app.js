@@ -6,6 +6,7 @@ let logger = require('morgan');
 
 let index = require('./controllers/index');
 let users = require('./controllers/users');
+let auth = require('./controllers/auth');
 
 // custom controllers
 let posts = require('./controllers/posts');
@@ -40,6 +41,7 @@ mongoose.connect(process.env.CONNECTION_STRING)
 app.use('/', index);
 app.use('/users', users);
 app.use('/posts', posts);
+app.use('/auth', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
