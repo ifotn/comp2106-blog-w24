@@ -14,6 +14,8 @@ let posts = require('./controllers/posts');
 // custom imports
 let mongoose = require('mongoose');
 let dotenv = require('dotenv');
+let passport = require('passport');
+let session = require('express-session');
 
 let app = express();
 
@@ -37,6 +39,26 @@ if (process.env.NODE_ENV != 'production') {
 mongoose.connect(process.env.CONNECTION_STRING)
 .then((res) => { console.log('Connected to MongoDB') })
 .catch(() => { console.log('MongoDB connection failed') });
+
+// passport local auth config.  MUST be BEFORE controllers that use it 
+// 1. configure session support
+app.use(session({
+  secret: 'string-here-for-now-but-should-be-in-ENV',
+  resave: true,
+  saveUninitialized: false
+}));
+
+// 2. enable passport w/sessions
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 3. link passport to our User model & use local strategy by default
+let User = require('./models/user');
+passport.use(User.createStrategy());
+
+// 4. enable session reads / writes for passport users
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use('/', index);
 app.use('/users', users);
