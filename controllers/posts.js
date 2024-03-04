@@ -4,6 +4,9 @@ let router = express.Router();
 // Post model for CRUD
 let Post = require('../models/post');
 
+// global auth check
+let authCheck = require('../authCheck');
+
 /* GET: /posts => show main blog page */
 router.get('/', async(req, res) => {
     // use model to fetch all Post data from MongoDB
@@ -30,14 +33,14 @@ router.get('/details/:_id', async (req, res) => {
 });
 
 /* GET: /posts/create => display new post form */
-router.get('/create', (req, res) => {
+router.get('/create', authCheck, (req, res) => {
     res.render('posts/create', {
         title: 'Create New Post'
     });
 });
 
 /* POST: /posts/create => process form submission to save new blog post */
-router.post('/create', async (req, res) => {
+router.post('/create', authCheck, async (req, res) => {
     // use mongoose model to save new post to db
     await Post.create(req.body);
 
@@ -46,7 +49,7 @@ router.post('/create', async (req, res) => {
 });
 
 /* GET: /posts/delete/abc123 => remove selected doc & redirect */
-router.get('/delete/:_id', async (req, res) => {
+router.get('/delete/:_id', authCheck, async (req, res) => {
     // delete selected doc based on _id in url param
     await Post.findByIdAndDelete(req.params._id);
 
@@ -55,7 +58,7 @@ router.get('/delete/:_id', async (req, res) => {
 });
 
 /* GET: /posts/edit/abc123 => display selected doc in form */
-router.get('/edit/:_id', async (req, res) => {
+router.get('/edit/:_id', authCheck, async (req, res) => {
     // get selected doc from db
     let post = await Post.findById(req.params._id);
 
@@ -67,7 +70,7 @@ router.get('/edit/:_id', async (req, res) => {
 });
 
 /* POST: /posts/edit/abc123 => updated doc from form submission */
-router.post('/edit/:_id', async (req, res) => {
+router.post('/edit/:_id', authCheck, async (req, res) => {
     // update doc
     await Post.findByIdAndUpdate(req.params._id, req.body);
 
