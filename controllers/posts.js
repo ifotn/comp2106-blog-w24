@@ -16,7 +16,8 @@ router.get('/', async(req, res) => {
     // load view and pass all the json data to it for display
     res.render('posts/index', {
         title: 'Our Lastest Random Thoughts',
-        posts: posts
+        posts: posts,
+        user: req.user
     });
 });
 
@@ -28,14 +29,16 @@ router.get('/details/:_id', async (req, res) => {
     //console.log(post);
     res.render('posts/details', {
         title: 'Blog Post',
-        post: post
+        post: post,
+        user: req.user
     });
 });
 
 /* GET: /posts/create => display new post form */
 router.get('/create', authCheck, (req, res) => {
     res.render('posts/create', {
-        title: 'Create New Post'
+        title: 'Create New Post',
+        user: req.user
     });
 });
 
@@ -51,10 +54,21 @@ router.post('/create', authCheck, async (req, res) => {
 /* GET: /posts/delete/abc123 => remove selected doc & redirect */
 router.get('/delete/:_id', authCheck, async (req, res) => {
     // delete selected doc based on _id in url param
-    await Post.findByIdAndDelete(req.params._id);
+    //await Post.findByIdAndDelete(req.params._id);
+    // get selected doc from db
+    let post = await Post.findById(req.params._id);
 
-    // redirect
-    res.redirect('/posts');
+    // owner check
+    if (req.user.username !== post.username) {
+        res.redirect('/auth/unauthorized');
+        return;
+    }
+    else {
+        await post.deleteOne({ _id: post._id });
+
+        // redirect
+        res.redirect('/posts');
+    }
 });
 
 /* GET: /posts/edit/abc123 => display selected doc in form */
@@ -62,11 +76,19 @@ router.get('/edit/:_id', authCheck, async (req, res) => {
     // get selected doc from db
     let post = await Post.findById(req.params._id);
 
-    // load view & pass data
+    // owner check
+    if (req.user.username !== post.username) {
+        res.redirect('/auth/unauthorized');
+        return;
+    }
+    else {
+        // load view & pass data
     res.render('posts/edit', {
         title: 'Edit Post',
-        post: post
+        post: post,
+        user: req.user
     });
+    }
 });
 
 /* POST: /posts/edit/abc123 => updated doc from form submission */

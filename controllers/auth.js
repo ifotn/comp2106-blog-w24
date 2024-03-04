@@ -4,7 +4,10 @@ const passport = require('passport');
 const User = require('../models/user');
 
 router.get('/register', (req, res) => {
-    res.render('auth/register', { title: 'Register' });
+    res.render('auth/register', { 
+        title: 'Register',
+        user: req.user 
+    });
 })
 
 router.post('/register', (req, res) => {
@@ -31,7 +34,8 @@ router.get('/login', (req, res) => {
 
     res.render('auth/login', { 
         title: 'Login',
-        messages: messages
+        messages: messages,
+        user: req.user
      });
 })
 
@@ -40,5 +44,19 @@ router.post('/login', passport.authenticate('local', {
     failureRedirect: '/auth/login',
     failureMessage: 'Invalid Login'
 }));
+
+router.get('/logout', (req, res) => {
+    req.session.messages = [];
+    req.logout((err) => {
+        res.redirect('/');
+    });
+});
+
+router.get('/unauthorized', (req, res) => {
+    res.render('auth/unauthorized', {
+        title: 'Unauthorized',
+        user: req.user
+    });
+});
 
 module.exports = router;

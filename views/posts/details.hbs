@@ -7,10 +7,12 @@
 <a href="/posts" class="btn btn-info">
     <i class="bi bi-skip-backward-fill"></i> Back to Blog
 </a>
-<a href="/posts/edit/{{post._id}}" class="btn btn-info">
-    <i class="bi bi-pencil-square"></i> Edit
-</a>
-<a href="/posts/delete/{{post._id}}" class="btn btn-info"
-    onclick="return confirm('For sure?');">
-    <i class="bi bi-x-circle"></i> Delete
-</a>
+{{#if user}}
+    <a href="/posts/edit/{{post._id}}" class="btn btn-info">
+        <i class="bi bi-pencil-square"></i> Edit
+    </a>
+    <a href="/posts/delete/{{post._id}}" class="btn btn-info"
+        onclick="return confirm('For sure?');">
+        <i class="bi bi-x-circle"></i> Delete
+    </a>
+{{/if}}

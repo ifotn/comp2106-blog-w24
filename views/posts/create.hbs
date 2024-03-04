@@ -9,7 +9,8 @@
     </fieldset>
     <fieldset>
         <label for="username">Username: *</label>
-        <input name="username" id="username" required />
+        <input name="username" id="username" type="hidden" value="{{user.username}}" />
+        <input name="usernameDisplay" id="usernameDisplay" required disabled value="{{user.username}}" />
     </fieldset>
     <button class="btn btn-info offset-4">
         <i class="bi bi-plus-circle"></i> Save
