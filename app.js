@@ -43,7 +43,7 @@ mongoose.connect(process.env.CONNECTION_STRING)
 // passport local auth config.  MUST be BEFORE controllers that use it 
 // 1. configure session support
 app.use(session({
-  secret: 'string-here-for-now-but-should-be-in-ENV',
+  secret: process.env.PASSPORT_SECRET,
   resave: true,
   saveUninitialized: false
 }));
